@@ -30,28 +30,32 @@ board.addEventListener('click', event => {
 
 const input = document.querySelector('.time-list input');
 const MIN_VALUE = 1;
-const MAX_VALUE = 4_294_967_296; // the greatest 32bit number
+const MAX_VALUE = 4294967296; // the greatest 32bit number
 input.setAttribute('min', MIN_VALUE);
 input.setAttribute('max', MAX_VALUE);
-input.addEventListener('change', event => {
+input.addEventListener('keyup', event => {
   if (input.value < MIN_VALUE) {
     input.value = MIN_VALUE;
   } else if (input.value > MAX_VALUE) {
     input.value = MAX_VALUE;
   }
   const lastButton = timeList.lastElementChild.querySelector('button');
+  lastButton.innerText = input.value + ' сек';
   lastButton.setAttribute('data-time', input.value);
 })
+
+let inv;
 
 function startGame() {
   setTime();
   createRandomCircle();
-  setInterval(decreaseTime, 1000);
+  inv = setInterval(decreaseTime, 1000);
 }
 
 function decreaseTime() {
   if (time <= 1) {
     finishGame();
+    clearInterval(inv);
   } else {
     let current = --time;
     setTime();
@@ -106,6 +110,17 @@ function getRandomColor() {
     if (colorPart > 127) isDark = false;
   } while (isDark);
   color += colorPart.toString(16).padStart(2, '0');
-  console.log(color);
   return color;
+}
+
+function winTheGame() {
+  function kill() {
+    const circle = document.querySelector('.circle');
+    if (!circle) {
+      clearInterval(inv);
+      return;
+    }
+    circle.click();
+  }
+  let inv = setInterval(kill, 50);
 }
