@@ -30,9 +30,9 @@ board.addEventListener('click', event => {
 
 const input = document.querySelector('.time-list input');
 const MIN_VALUE = 1;
-const MAX_VALUE = 4294967296; // the greatest 32bit number
-input.setAttribute('min', MIN_VALUE);
-input.setAttribute('max', MAX_VALUE);
+const MAX_VALUE = 86400;
+input.setAttribute('min', MIN_VALUE.toString());
+input.setAttribute('max', MAX_VALUE.toString());
 input.addEventListener('keyup', event => {
   if (input.value < MIN_VALUE) {
     input.value = MIN_VALUE;
@@ -40,7 +40,7 @@ input.addEventListener('keyup', event => {
     input.value = MAX_VALUE;
   }
   const lastButton = timeList.lastElementChild.querySelector('button');
-  lastButton.innerText = input.value + ' сек';
+  lastButton.innerText = input.value + ' seconds';
   lastButton.setAttribute('data-time', input.value);
 })
 
@@ -57,7 +57,7 @@ function decreaseTime() {
     finishGame();
     clearInterval(inv);
   } else {
-    let current = --time;
+    --time;
     setTime();
   }
 }
@@ -70,8 +70,8 @@ function setTime() {
 }
 
 function finishGame() {
-  timeElement.parentNode.classList.add('hide');
-  board.innerHTML = `<h1>Счет: <span class="primary">${score}</span></h1>`;
+  timeElement.parentElement.classList.add('hide');
+  board.innerHTML = `<h1>Your score: <span class="primary">${score}</span></h1>`;
 }
 
 function createRandomCircle() {
@@ -111,16 +111,4 @@ function getRandomColor() {
   } while (isDark);
   color += colorPart.toString(16).padStart(2, '0');
   return color;
-}
-
-function winTheGame() {
-  function kill() {
-    const circle = document.querySelector('.circle');
-    if (!circle) {
-      clearInterval(inv);
-      return;
-    }
-    circle.click();
-  }
-  let inv = setInterval(kill, 50);
 }
